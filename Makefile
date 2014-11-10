@@ -8,6 +8,9 @@ ASM                    = /usr/bin/nasm
 # The folder that will contain the build result
 BUILDDIRECTORY         = Build
 
+# The name of a loop device that is free (this is needed to create the disk image)
+FREELOOPDEVICE         = $(shell losetup -f)
+
 # The source files for the 
 BOOTLOADERSTAGE1SOURCE = Boot/BootLoaderStage1.asm Boot/VideoDriver.asm Boot/StorageDriver.asm Boot/Ext2Driver.asm
 
@@ -23,20 +26,20 @@ Axiom-$(VERSION).img: BootLoaderStage1.bin
 	dd if=/dev/zero of=$(BUILDDIRECTORY)/Axiom-$(VERSION).img bs=1024 count=20480
 
 	# Creates a loop device for the disk image
-	losetup /dev/loop1 $(BUILDDIRECTORY)/Axiom-$(VERSION).img
+	losetup $(FREELOOPDEVICE) $(BUILDDIRECTORY)/Axiom-$(VERSION).img
 
 	# Creates an ext2 file system on the disk image
-	mkfs /dev/loop1
+	mkfs $(FREELOOPDEVICE)
 
 	# Copies our custom boot sector to the disk image
-	dd if=$(BUILDDIRECTORY)/BootLoaderStage1.bin of=/dev/loop1 bs=512 count=1
+	dd if=$(BUILDDIRECTORY)/BootLoaderStage1.bin of=$(FREELOOPDEVICE) bs=512 count=1
 
 	# Mounts the disk image, so that all the other files can be copied onto it
-	mount -t ext2 /dev/loop1 /mnt
+	mount -t ext2 $(FREELOOPDEVICE) /mnt
 
 	# Unmounts the disk image and removes the loop device, after all files have been copied to it
 	umount /mnt
-	losetup -d /dev/loop1
+	losetup -d $(FREELOOPDEVICE)
 
 # The target that assembles the stage 1 of the boot loader
 BootLoaderStage1.bin: BuildDirectory $(BOOTLOADERSTAGE1SOURCE)
