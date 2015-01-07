@@ -41,6 +41,9 @@ Axiom-$(VERSION).img: BootSector.bin
 	umount /mnt
 	losetup -d $(FREELOOPDEVICE)
 
+	# Changes the permissions of the image file, so that the user does not need to be root in order to boot the image
+	chmod 777 $(BUILDDIRECTORY)/Axiom-$(VERSION).img
+
 # The target that assembles the boot sector
 BootSector.bin: BuildDirectory $(BOOTSECTORSOURCE)
 	$(ASSEMBLER) Boot/BootSector.asm -f bin -o $(BUILDDIRECTORY)/BootSector.bin
