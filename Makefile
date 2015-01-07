@@ -1,27 +1,27 @@
 
 # The current version number of Axiom (semantic versioning)
-VERSION                = 0.0.1-Pre-Alpha-1
+VERSION          = 0.0.1-Pre-Alpha-1
 
 # The assembler that we are using
-ASM                    = /usr/bin/nasm
+ASSEMBLER        = /usr/bin/nasm
 
 # The folder that will contain the build result
-BUILDDIRECTORY         = Build
+BUILDDIRECTORY   = Build
 
 # The name of a loop device that is free (this is needed to create the disk image)
-FREELOOPDEVICE         = $(shell losetup -f)
+FREELOOPDEVICE   = $(shell losetup -f)
 
-# The source files for the 
-BOOTLOADERSTAGE1SOURCE = Boot/BootLoaderStage1.asm Boot/VideoDriver.asm Boot/StorageDriver.asm Boot/Ext2Driver.asm
+# The source files for the boot sector
+BOOTSECTORSOURCE = Boot/BootLoaderStage1.asm Boot/VideoDriver.asm Boot/StorageDriver.asm Boot/Ext2Driver.asm
 
-# Declares which of the targets are phony (do not actually create a file and are thus build everytime)
+# Declares which of the targets are phony (targets that do not actually create a file and are thus build everytime)
 .PHONY: Axiom-$(VERSION).img BuildDirectory Clean
 
 # The default target, that builds Axiom completely
 All: Axiom-$(VERSION).img
 
 # The target that creates 
-Axiom-$(VERSION).img: BootLoaderStage1.bin
+Axiom-$(VERSION).img: BootSector.bin
 	# Creates a new disk image by reading 20 MiB from /dev/null (which just outputs zeros) and writing it to a file
 	dd if=/dev/zero of=$(BUILDDIRECTORY)/Axiom-$(VERSION).img bs=1024 count=20480
 
@@ -32,7 +32,7 @@ Axiom-$(VERSION).img: BootLoaderStage1.bin
 	mkfs $(FREELOOPDEVICE)
 
 	# Copies our custom boot sector to the disk image
-	dd if=$(BUILDDIRECTORY)/BootLoaderStage1.bin of=$(FREELOOPDEVICE) bs=512 count=1
+	dd if=$(BUILDDIRECTORY)/BootSector.bin of=$(FREELOOPDEVICE) bs=512 count=1
 
 	# Mounts the disk image, so that all the other files can be copied onto it
 	mount -t ext2 $(FREELOOPDEVICE) /mnt
@@ -41,9 +41,9 @@ Axiom-$(VERSION).img: BootLoaderStage1.bin
 	umount /mnt
 	losetup -d $(FREELOOPDEVICE)
 
-# The target that assembles the stage 1 of the boot loader
-BootLoaderStage1.bin: BuildDirectory $(BOOTLOADERSTAGE1SOURCE)
-	$(ASM) Boot/BootLoaderStage1.asm -f bin -o $(BUILDDIRECTORY)/BootLoaderStage1.bin
+# The target that assembles the boot sector
+BootSector.bin: BuildDirectory $(BOOTSECTORSOURCE)
+	$(ASM) Boot/BootSector.asm -f bin -o $(BUILDDIRECTORY)/BootSector.bin
 
 # The target that creates the folder where the result of the build is stored
 BuildDirectory:
