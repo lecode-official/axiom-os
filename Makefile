@@ -12,7 +12,7 @@ BUILDDIRECTORY   = Build
 FREELOOPDEVICE   = $(shell losetup -f)
 
 # The source files for the boot sector
-BOOTSECTORSOURCE = Boot/BootSector.asm Boot/VideoDriver.asm Boot/StorageDriver.asm Boot/Ext2Driver.asm
+BOOTSECTORSOURCE = Boot/BootSector.asm Boot/VideoDriver.asm Boot/StorageDriver.asm Boot/Fat12Driver.asm
 
 # Declares which of the targets are phony (targets that do not actually create a file and are thus build everytime)
 .PHONY: Axiom-$(VERSION).img BuildDirectory Clean
