@@ -26,8 +26,9 @@ mov   sp, bp                      ; Sets the top of the stack (since the stack i
 call ResetScreen
 
 ; Prints out a success message that the master boot record has successfully loaded the boot sector
-mov   si, BootSectorLoadedMessage
-call  Write
+mov   si, BootSectorLoadedMessage ; Loads the address of the success message
+mov   bl, 0x2                     ; Sets the foreground color of the text to green
+call  WriteLine                   ; Writes the success message to the screen
 
 ; In order to prevent the CPU from going on beyond the boot loader and potentially executing random bytes, the CPU is halted (but it
 ; should not come this far)
@@ -35,9 +36,9 @@ cli                               ; Clears all interrupts before halting the CPU
 hlt                               ; Prevents any further execution of code
 
 ; Includes all the drivers that are needed to run the boot sector and loading the boot loader
-%include "Source/BootSector/VideoDriver.asm"   ; A simple video driver, that allows us to print strings to the screen
-%include "Source/BootSector/StorageDriver.asm" ; A simple storage driver, that allows us to access the drive the boot loader was loaded from
-%include "Source/BootSector/Fat12Driver.asm"   ; A simple ext2 file system driver, that allows us to load the second stage of the boot loader
+%include "Source/BootSector/VideoDriver.asm"   ; The video driver, that allows us to print strings to the screen
+%include "Source/BootSector/StorageDriver.asm" ; The storage driver, that allows us to access the drive the boot sector was loaded from
+%include "Source/BootSector/Fat12Driver.asm"   ; The FAT12 file system driver, that allows us to load the actual boot loader
 
 ; Contains all the strings that are used during the execution of the boot sector
 BootSectorLoadedMessage db "Success: The BIOS has loaded the first stage of the bootloader", 0
