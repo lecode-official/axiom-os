@@ -25,9 +25,19 @@ mov   sp, bp                      ; Sets the top of the stack (since the stack i
 ; Resets the screen to the standard video mode and clears it
 call ResetScreen
 
-; Prints out a success message that the master boot record has successfully loaded the boot sector
+; Prints out the title of the operating system
+mov   si, OperatingSystemTitle    ; Loads the address of the success message
+mov   bl, 0xE                     ; Sets the foreground color of the text to yellow
+call  WriteLine                   ; Writes the operating system title to the screen
+mov   si, EmptyString             ; Loads the address of the empty string
+call  WriteLine                   ; Write an empty string, which results in just breaking the line
+
+; Prints out an informational message that the BIOS has successfully loaded the boot sector
+mov   si, InformationalMessage    ; Loads the address of the informational message
+mov   bl, 0x9                     ; Sets the foreground color of the text to light blue
+call  Write                       ; Writes the informational message to the screen
 mov   si, BootSectorLoadedMessage ; Loads the address of the success message
-mov   bl, 0x2                     ; Sets the foreground color of the text to green
+mov   bl, 0x7                     ; Sets the foreground color of the text to light gray
 call  WriteLine                   ; Writes the success message to the screen
 
 ; In order to prevent the CPU from going on beyond the boot loader and potentially executing random bytes, the CPU is halted (but it
@@ -41,7 +51,12 @@ hlt                               ; Prevents any further execution of code
 %include "Source/BootSector/Fat12Driver.asm"   ; The FAT12 file system driver, that allows us to load the actual boot loader
 
 ; Contains all the strings that are used during the execution of the boot sector
-BootSectorLoadedMessage db "Success: The BIOS has loaded the first stage of the bootloader", 0
+EmptyString             db 0
+OperatingSystemTitle    db "Welcome to Axiom-0.0.1-Pre-Alpha-1", 0
+InformationalMessage    db "[ Info ]    ", 0
+SuccessMessage          db "[ Success ] ", 0
+ErrorMessage            db "[ Error ]   ", 0
+BootSectorLoadedMessage db "The BIOS has successfully loaded the boot sector", 0
 
 ; Pads the boot sector to 512 bytes (the boot sector must be exactly 512 bytes) with the last two bytes as the magic boot sector number
 ; (the BIOS and the master boot record recognize bootable devices if the last to bytes of the boot sector are 0x55AA)
