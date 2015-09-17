@@ -15,7 +15,7 @@ encourage you to read the license text, because there are still some rules you h
 pull requests, so if you have ideas to improve on my work, then you are more than welcome to contribute. But still, this is a personal
 project, therefore I will decide what is being added to it and what is not.
 
-## Current status
+## Current Status
 I am more or less actively developing this project in my spare time. This potentially means that from time to time I won't have any time
 to spare and will not be able to work on the project. Currently the project is &ndash; *I can not stress this enough* &ndash; in a **very
 early** stage. I am still working on a very simple boot loader and haven't even started writing a simple kernel.
