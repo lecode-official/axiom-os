@@ -22,9 +22,12 @@ mov   bp, 0x9000                  ; Sets the bottom of the stack
 mov   sp, bp                      ; Sets the top of the stack (since the stack is empty at the beginning, this is the same as the
                                   ; stack's bottom)
 
+; Resets the screen to the standard video mode and clears it
+call ResetScreen
+
 ; Prints out a success message that the master boot record has successfully loaded the boot sector
 mov   si, BootSectorLoadedMessage
-call  PrintString
+call  Write
 
 ; In order to prevent the CPU from going on beyond the boot loader and potentially executing random bytes, the CPU is halted (but it
 ; should not come this far)
