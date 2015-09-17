@@ -24,7 +24,7 @@ All: Axiom-$(VERSION).img
 Axiom-$(VERSION).img: BootSector.bin
 
 	# Creates a new disk image by reading 1 MiB from /dev/null (which just outputs zeros) and writing it to a file
-	dd if=/dev/zero of=$(BUILDDIRECTORY)/Axiom-$(VERSION).img bs=1024 count=1024
+	dd if=/dev/zero of=$(BUILDDIRECTORY)/Axiom-$(VERSION).img bs=1024 count=1440
 
 	# Creates a loop device for the disk image
 	losetup $(FREELOOPDEVICE) $(BUILDDIRECTORY)/Axiom-$(VERSION).img
@@ -39,7 +39,7 @@ Axiom-$(VERSION).img: BootSector.bin
 	
 	# Mounts the disk image, so that all the other files can be copied onto it
 	mount -t msdos $(FREELOOPDEVICE) /mnt
-
+	
 	# Unmounts the disk image and removes the loop device, after all files have been copied to it
 	umount /mnt
 	losetup -d $(FREELOOPDEVICE)
