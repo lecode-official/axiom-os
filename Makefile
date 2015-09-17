@@ -12,7 +12,7 @@ BUILDDIRECTORY   = Build
 FREELOOPDEVICE   = $(shell losetup -f)
 
 # The source files for the boot sector
-BOOTSECTORSOURCE = Boot/BootSector.asm Boot/VideoDriver.asm Boot/StorageDriver.asm Boot/Fat12Driver.asm
+BOOTSECTORSOURCE = Source/BootSector/*.asm
 
 # Declares which of the targets are phony (targets that do not actually create a file and are thus build everytime)
 .PHONY: Axiom-$(VERSION).img BuildDirectory Clean
@@ -37,7 +37,6 @@ Axiom-$(VERSION).img: BootSector.bin
 	dd if=$(FREELOOPDEVICE) of=$(BUILDDIRECTORY)/BootSector.bin count=62 iflag=count_bytes conv=notrunc
 	dd if=$(BUILDDIRECTORY)/BootSector.bin of=$(FREELOOPDEVICE) count=512 iflag=count_bytes conv=notrunc
 	
-
 	# Mounts the disk image, so that all the other files can be copied onto it
 	mount -t msdos $(FREELOOPDEVICE) /mnt
 
@@ -51,7 +50,7 @@ Axiom-$(VERSION).img: BootSector.bin
 # The target that assembles the boot sector
 BootSector.bin: BuildDirectory $(BOOTSECTORSOURCE)
 
-	$(ASSEMBLER) Boot/BootSector.asm -f bin -o $(BUILDDIRECTORY)/BootSector.bin
+	$(ASSEMBLER) Source/BootSector/BootSector.asm -f bin -o $(BUILDDIRECTORY)/BootSector.bin
 
 # The target that creates the folder where the result of the build is stored
 BuildDirectory:
