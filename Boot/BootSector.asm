@@ -34,7 +34,7 @@ hlt                               ; Prevents any further execution of code
 ; Includes all the drivers that are needed to run the boot sector and loading the boot loader
 %include "Boot/VideoDriver.asm"   ; A simple video driver, that allows us to print strings to the screen
 %include "Boot/StorageDriver.asm" ; A simple storage driver, that allows us to access the drive the boot loader was loaded from
-%include "Boot/Fat12Driver.asm"    ; A simple ext2 file system driver, that allows us to load the second stage of the boot loader
+%include "Boot/Fat12Driver.asm"   ; A simple ext2 file system driver, that allows us to load the second stage of the boot loader
 
 ; Contains all the strings that are used during the execution of the boot sector
 BootSectorLoadedMessage db "Success: The BIOS has loaded the first stage of the bootloader", 0
