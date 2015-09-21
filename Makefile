@@ -21,7 +21,7 @@ BOOTSECTORSOURCE = Source/BootSector/*.asm
 All: Axiom-$(VERSION).img
 
 # The target that creates 
-Axiom-$(VERSION).img: BootSector.bin
+Axiom-$(VERSION).img: Fat12BootSector.bin
 
 	# Creates a new disk image by reading 1 MiB from /dev/null (which just outputs zeros) and writing it to a file
 	dd if=/dev/zero of=$(BUILDDIRECTORY)/Axiom-$(VERSION).img bs=1024 count=1440
@@ -32,10 +32,8 @@ Axiom-$(VERSION).img: BootSector.bin
 	# Creates an FAT12 file system on the disk image
 	mkdosfs -F 12 $(FREELOOPDEVICE)
 
-	# Copies our custom boot sector to the disk image by first copying the FAT12 headers to the bootloader and then copying the
-	# bootloader to the the disk image
-	dd if=$(FREELOOPDEVICE) of=$(BUILDDIRECTORY)/BootSector.bin count=62 iflag=count_bytes conv=notrunc
-	dd if=$(BUILDDIRECTORY)/BootSector.bin of=$(FREELOOPDEVICE) count=512 iflag=count_bytes conv=notrunc
+	# Copies our custom boot sector to the disk image
+	dd if=$(BUILDDIRECTORY)/Fat12BootSector.bin of=$(FREELOOPDEVICE) count=512 iflag=count_bytes conv=notrunc
 	
 	# Mounts the disk image, so that all the other files can be copied onto it
 	mount -t msdos $(FREELOOPDEVICE) /mnt
@@ -48,9 +46,9 @@ Axiom-$(VERSION).img: BootSector.bin
 	chmod 777 $(BUILDDIRECTORY)/Axiom-$(VERSION).img
 
 # The target that assembles the boot sector
-BootSector.bin: BuildDirectory $(BOOTSECTORSOURCE)
+Fat12BootSector.bin: BuildDirectory $(BOOTSECTORSOURCE)
 
-	$(ASSEMBLER) Source/BootSector/BootSector.asm -f bin -o $(BUILDDIRECTORY)/BootSector.bin
+	$(ASSEMBLER) Source/BootSector/Fat12BootSector.asm -f bin -o $(BUILDDIRECTORY)/Fat12BootSector.bin
 
 # The target that creates the folder where the result of the build is stored
 BuildDirectory:
