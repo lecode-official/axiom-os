@@ -57,24 +57,15 @@ call ResetScreen
 mov   si, OperatingSystemTitle     ; Loads the address of the success message
 mov   bl, 0xE                      ; Sets the foreground color of the text to yellow
 call  WriteLine                    ; Writes the operating system title to the screen
-mov   si, EmptyString              ; Loads the address of the empty string
-call  WriteLine                    ; Write an empty string, which results in just breaking the line
+call  WriteEmptyLine               ; Writes an empty line which separates the title from the messages
 
-; Prints out a success message that the BIOS has successfully loaded the boot sector
-mov   si, SuccessMessage           ; Loads the address of the success message
-mov   bl, 0x2                      ; Sets the foreground color of the text to green
-call  Write                        ; Writes the informational message to the screen
-mov   si, BootSectorLoadedMessage  ; Loads the address of the success message
-mov   bl, 0x7                      ; Sets the foreground color of the text to light gray
-call  WriteLine                    ; Writes the success message to the screen
+; Prints out a success message that the boot sector has been loaded successfully
+mov   si, BootSectorLoadedMessage
+call  WriteSuccessMessage
 
 ; Prints out an informational message that the boot sector is loading the bootloader
-mov   si, InformationalMessage     ; Loads the address of the informational message
-mov   bl, 0x9                      ; Sets the foreground color of the text to light blue
-call  Write                        ; Writes the informational message to the screen
-mov   si, LoadingBootloaderMessage ; Loads the address of the informational message
-mov   bl, 0x7                      ; Sets the foreground color of the text to light gray
-call  WriteLine                    ; Writes the success message to the screen
+mov   si, LoadingBootloaderMessage
+call  WriteInformationalMessage
 
 ; In order to prevent the CPU from going on beyond the boot loader and potentially executing random bytes, the CPU is halted (but it
 ; should not come this far)
@@ -83,16 +74,12 @@ hlt                                ; Prevents any further execution of code
 
 ; Includes all the drivers that are needed to run the boot sector and loading the boot loader
 %include "Source/BootSector/VideoDriver.asm"   ; The video driver, that allows us to print strings to the screen
-%include "Source/BootSector/StorageDriver.asm" ; The storage driver, that allows us to access the drive the boot sector was loaded from
+;%include "Source/BootSector/StorageDriver.asm" ; The storage driver, that allows us to access the drive the boot sector was loaded from
 %include "Source/BootSector/Fat12Driver.asm"   ; The FAT12 file system driver, that allows us to load the actual boot loader
 
 ; Contains all the strings that are used during the execution of the boot sector
-EmptyString                    db 0
 OperatingSystemTitle           db "Axiom-0.0.1-Pre-Alpha-1", 0
-InformationalMessage           db "[ Info ] ", 0
-SuccessMessage                 db "[ Okay ] ", 0
-ErrorMessage                   db "[ Fail ] ", 0
-BootSectorLoadedMessage        db "Bootsector loaded", 0
+BootSectorLoadedMessage        db "Boot sector loaded", 0
 LoadingBootloaderMessage       db "Loading bootloader...", 0
 LoadingBootloaderFailedMessage db "Bootloader could not be loaded", 0
 
