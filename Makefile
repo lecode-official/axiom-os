@@ -48,7 +48,11 @@ Axiom-$(VERSION).img: Fat12BootSector.bin
 # The target that assembles the boot sector
 Fat12BootSector.bin: BuildDirectory $(BOOTSECTORSOURCE)
 
+	# Creates the FAT12 boot sector
 	$(ASSEMBLER) Source/BootSector/Fat12BootSector.asm -f bin -o $(BUILDDIRECTORY)/Fat12BootSector.bin
+
+	# Changes the permissions of the boot sector file, so that the user does not need to be root in order to delete or overwrite the file
+	chmod 777 $(BUILDDIRECTORY)/Fat12BootSector.bin
 
 # The target that creates the folder where the result of the build is stored
 BuildDirectory:

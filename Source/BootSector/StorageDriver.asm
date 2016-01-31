@@ -1,4 +1,11 @@
 
+; Resets the floppy disk drive from which the boot sector was booted and goes immediately goes to the first sector off the disk.
+ResetDrive:
+    mov   ah, 0                                   ; AH contains the function number of the 13h BIOS interrupt, function 0 resets the drive
+    mov   dl, 0                                   ; DL contains the drive number, drive 0 is the floppy disk drive from which the BIOS has booted
+    int   13h                                     ; Calls the BIOS interrupt 13h to reset the floppy disk drive
+    jc    ResetDrive                              ; If anything went wrong then the carry flag is set, if so the resetting is retried
+
 ; Reads a series of sectors from disk.
 ; CX    => The number of sectors to read.
 ; AX    => The sector from which on should be read.
