@@ -47,8 +47,7 @@ mov   es, ax                       ; Sets the extra segment to 0
 ; Sets up the stack safely away from the code at the address 0x9000 (the stack grows from higher address downwards to lower addresses, therefore a
 ; stack overflow would result in the code of the boot sector to be overwritten, which will result in strange behavior)
 mov   bp, 0x9000                   ; Sets the bottom of the stack
-mov   sp, bp                       ; Sets the top of the stack (since the stack is empty at the beginning, this is the same as the
-                                   ; stack's bottom)
+mov   sp, bp                       ; Sets the top of the stack (since the stack is empty at the beginning, this is the same as the stack's bottom)
 
 ; Resets the screen to the standard video mode and clears it
 call ResetScreen
