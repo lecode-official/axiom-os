@@ -41,7 +41,7 @@ $(BUILDDIRECTORY)/Axiom-$(VERSION).img: $(BUILDDIRECTORY)/Fat12BootSector.bin $(
 	mount -t msdos $(FREELOOPDEVICE) /mnt/axiom
 
 	# Moves the boot loader to the disk image
-	cp $(BUILDDIRECTORY)/Fat12BootLoader.bin /mnt/axiom/Bootldr.bin
+	cp $(BUILDDIRECTORY)/Fat12BootLoader.bin /mnt/axiom/BootLdr.sys
 
 	# Unmounts the disk image and removes the loop device, after all files have been copied to it
 	umount /mnt/axiom
