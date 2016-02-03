@@ -47,15 +47,18 @@ call ResetScreen
 mov   si, OperatingSystemTitle     ; Loads the address of the success message
 mov   bl, 0xE                      ; Sets the foreground color of the text to yellow
 call  WriteLine                    ; Writes the operating system title to the screen
-call  WriteEmptyLine               ; Writes an empty line which separates the title from the messages
+mov   si, EmptyString              ; Loads the address of an empty string, which is used to write an empty line
+call  WriteLine                    ; Writes an empty line which separates the title from the messages
 
 ; Prints out a success message that the boot sector has been loaded successfully
 mov   si, BootSectorLoadedMessage
-call  WriteSuccessMessage
+mov   bl, 0x2                      ; Sets the foreground color of the text to green
+call  WriteLine
 
 ; Prints out an informational message that the boot sector is loading the boot loader
 mov   si, LoadingBootLoaderMessage
-call  WriteInformationalMessage
+mov   bl, 0x9                      ; Sets the foreground color of the text to light blue
+call  WriteLine
 
 ; In order to prevent the CPU from going on beyond the boot sector and potentially executing random bytes, the CPU is halted (but it should not come
 ; this far)
@@ -69,9 +72,9 @@ hlt                                ; Prevents any further execution of code
 
 ; Contains all the strings that are used during the execution of the boot sector
 OperatingSystemTitle           db "Axiom-0.0.1-Pre-Alpha-1", 0
-BootSectorLoadedMessage        db "Boot sector loaded", 0
-LoadingBootLoaderMessage       db "Loading boot loader...", 0
-LoadingBootLoaderFailedMessage db "BootLoader could not be loaded", 0
+BootSectorLoadedMessage        db "[Okay] Boot sector loaded", 0
+LoadingBootLoaderMessage       db "[Info] Loading boot loader...", 0
+EmptyString                    db 0
 
 ; Pads the boot sector to 512 bytes (the boot sector must be exactly 512 bytes) with the last two bytes as the magic boot sector number (the BIOS
 ; and the master boot record recognize bootable devices if the last to bytes of the boot sector are 0x55AA)

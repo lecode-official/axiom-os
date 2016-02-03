@@ -27,7 +27,8 @@ sti
 
 ; Prints out a success message that the boot loader has been loaded successfully
 mov   si, BootLoaderLoadedMessage
-call  WriteSuccessMessage
+mov   bl, 0x2                      ; Sets the foreground color of the text to green
+call  WriteLine
 
 ; In order to prevent the CPU from going on beyond the boot loader and potentially executing random bytes, the CPU is halted (but it should not come
 ; this far)
