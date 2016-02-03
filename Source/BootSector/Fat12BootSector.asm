@@ -11,27 +11,9 @@ jmp short BootSectorMain           ; Jumps directly to the start of the boot sec
 nop                                ; The no-operation is needed to fill up the space, because the BIOS parameter block start at byte 3
 
 ; The BIOS parameter block, which contains all information about the FAT12 file system on the boot medium
-OemIdentifier                  db "Axiom   "
-NumberOfBytesPerSector         dw 512
-NumberOfSectorsPerCluster      db 1
-NumberOfReservedSectors        dw 1
-NumberOfFileAllocationTables   db 2
-NumberOfDirectoryEntries       dw 224
-TotalSectorsInLogicalVolume    dw 2880
-MediaDescriptorType            db 0xF0
-NumberOfSectorsPerFat          dw 9
-NumberOfSectorsPerTrack        dw 18
-NumberOfHeadsPerCylinder       dw 2
-NumberOfHiddenSectors          dd 0
-NumberOfTotalSectorsBig        dd 0
-DriveNumber                    db 0
-UnusedReservedFlags            db 0
-BootSignature                  db 0x29
-SerialNumber                   dd 0xA0A1A2A3
-VolumeLabel                    db "AxiomVolume"
-FileSystem                     db "FAT12   "
+%include "Source/RealModeDrivers/Fat12BiosParameterBlock.asm"
 
-; Pads the beginning of the bootloader with 62 bytes of zeros, this is needed, because the bootloader is written to a FAT12 filesystem, the first 62
+; Pads the beginning of the boot loader with 62 bytes of zeros, this is needed, because the boot loader is written to a FAT12 filesystem, the first 62
 ; bytes of the boot sector contain the FAT12 headers
 times 59                       db 0
 
@@ -62,25 +44,25 @@ call  WriteEmptyLine               ; Writes an empty line which separates the ti
 mov   si, BootSectorLoadedMessage
 call  WriteSuccessMessage
 
-; Prints out an informational message that the boot sector is loading the bootloader
-mov   si, LoadingBootloaderMessage
+; Prints out an informational message that the boot sector is loading the boot loader
+mov   si, LoadingBootLoaderMessage
 call  WriteInformationalMessage
 
-; In order to prevent the CPU from going on beyond the boot loader and potentially executing random bytes, the CPU is halted (but it should not come
+; In order to prevent the CPU from going on beyond the boot sector and potentially executing random bytes, the CPU is halted (but it should not come
 ; this far)
 cli                                ; Clears all interrupts before halting the CPU
 hlt                                ; Prevents any further execution of code
 
 ; Includes all the drivers that are needed to run the boot sector and loading the boot loader
-%include "Source/BootSector/VideoDriver.asm"   ; The video driver, that allows us to print strings to the screen
-%include "Source/BootSector/StorageDriver.asm" ; The storage driver, that allows us to access the drive the boot sector was loaded from
-%include "Source/BootSector/Fat12Driver.asm"   ; The FAT12 file system driver, that allows us to load the actual boot loader
+%include "Source/RealModeDrivers/VideoDriver.asm"   ; The video driver, that allows us to print strings to the screen
+%include "Source/RealModeDrivers/StorageDriver.asm" ; The storage driver, that allows us to access the drive the boot sector was loaded from
+%include "Source/RealModeDrivers/Fat12Driver.asm"   ; The FAT12 file system driver, that allows us to load the actual boot loader
 
 ; Contains all the strings that are used during the execution of the boot sector
 OperatingSystemTitle           db "Axiom-0.0.1-Pre-Alpha-1", 0
 BootSectorLoadedMessage        db "Boot sector loaded", 0
-LoadingBootloaderMessage       db "Loading bootloader...", 0
-LoadingBootloaderFailedMessage db "Bootloader could not be loaded", 0
+LoadingBootLoaderMessage       db "Loading boot loader...", 0
+LoadingBootLoaderFailedMessage db "BootLoader could not be loaded", 0
 
 ; Pads the boot sector to 512 bytes (the boot sector must be exactly 512 bytes) with the last two bytes as the magic boot sector number (the BIOS
 ; and the master boot record recognize bootable devices if the last to bytes of the boot sector are 0x55AA)

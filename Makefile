@@ -11,17 +11,18 @@ BUILDDIRECTORY   = Build
 # The name of a loop device that is free (this is needed to create the disk image)
 FREELOOPDEVICE   = $(shell losetup -f)
 
-# The source files for the boot sector
-BOOTSECTORSOURCE = Source/BootSector/*.asm
+# The source files for the boot sector and the boot loader
+BOOTSECTORSOURCE = Source/BootSector/*.asm Source/RealModeDrivers/*.asm
+BOOTLOADERSOURCE = Source/BootLoader/*.asm Source/RealModeDrivers/*.asm
 
 # Declares which of the targets are phony (targets that do not actually create a file and are thus build everytime)
 .PHONY: Axiom-$(VERSION).img BuildDirectory Clean
 
 # The default target, that builds Axiom completely
-All: Axiom-$(VERSION).img
+All: $(BUILDDIRECTORY)/Axiom-$(VERSION).img
 
 # The target that creates 
-Axiom-$(VERSION).img: Fat12BootSector.bin
+$(BUILDDIRECTORY)/Axiom-$(VERSION).img: $(BUILDDIRECTORY)/Fat12BootSector.bin $(BUILDDIRECTORY)/Fat12BootLoader.bin
 
 	# Creates a new disk image by reading 1 MiB from /dev/null (which just outputs zeros) and writing it to a file
 	dd if=/dev/zero of=$(BUILDDIRECTORY)/Axiom-$(VERSION).img bs=1024 count=1440
@@ -36,23 +37,37 @@ Axiom-$(VERSION).img: Fat12BootSector.bin
 	dd if=$(BUILDDIRECTORY)/Fat12BootSector.bin of=$(FREELOOPDEVICE) count=512 iflag=count_bytes conv=notrunc
 	
 	# Mounts the disk image, so that all the other files can be copied onto it
-	mount -t msdos $(FREELOOPDEVICE) /mnt
-	
+	mkdir -p /mnt/axiom
+	mount -t msdos $(FREELOOPDEVICE) /mnt/axiom
+
+	# Moves the boot loader to the disk image
+	cp $(BUILDDIRECTORY)/Fat12BootLoader.bin /mnt/axiom/Bootldr.bin
+
 	# Unmounts the disk image and removes the loop device, after all files have been copied to it
-	umount /mnt
+	umount /mnt/axiom
+	rmdir /mnt/axiom
 	losetup -d $(FREELOOPDEVICE)
 
 	# Changes the permissions of the image file, so that the user does not need to be root in order to boot the image
 	chmod 777 $(BUILDDIRECTORY)/Axiom-$(VERSION).img
 
 # The target that assembles the boot sector
-Fat12BootSector.bin: BuildDirectory $(BOOTSECTORSOURCE)
+$(BUILDDIRECTORY)/Fat12BootSector.bin: BuildDirectory $(BOOTSECTORSOURCE)
 
 	# Creates the FAT12 boot sector
 	$(ASSEMBLER) Source/BootSector/Fat12BootSector.asm -f bin -o $(BUILDDIRECTORY)/Fat12BootSector.bin
 
 	# Changes the permissions of the boot sector file, so that the user does not need to be root in order to delete or overwrite the file
 	chmod 777 $(BUILDDIRECTORY)/Fat12BootSector.bin
+
+# The target that assembles the boot loader
+$(BUILDDIRECTORY)/Fat12BootLoader.bin: BuildDirectory $(BOOTLOADERSOURCE)
+
+	# Creates the FAT12 boot loader
+	$(ASSEMBLER) Source/BootLoader/Fat12BootLoader.asm -f bin -o $(BUILDDIRECTORY)/Fat12BootLoader.bin
+
+	# Changes the permissions of the boot loader file, so that the user does not need to be root in order to delete or overwrite the file
+	chmod 777 $(BUILDDIRECTORY)/Fat12BootLoader.bin
 
 # The target that creates the folder where the result of the build is stored
 BuildDirectory:
