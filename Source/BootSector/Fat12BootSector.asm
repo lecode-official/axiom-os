@@ -20,16 +20,25 @@ times 59                       db 0
 ; Marks the actual start of the boot sector code
 BootSectorMain:
 
-; We have organized our addresses to 0x7C00, this means all addresses are based from 0x7c00:0, because the data segments are within the same code
-; segment, they are nulled
-xor   ax, ax                       ; Sets the AX register to 0 by performing an exclusive or operation on it
+; Disables all interrupts, so that the set up of the segments and the stack is not interrupted
+cli
+
+; We have organized our addresses to 0x7C00, this means all addresses are based from 0x0000:0x7C00, because the data segments are within the same code
+; segment, they are all set to 0
+xor   ax, ax                       ; Sets the AX to 0, this is needed, because segment registers can not be set directly
 mov   ds, ax                       ; Sets the data segment to 0
 mov   es, ax                       ; Sets the extra segment to 0
+mov   fs, ax                       ; Sets the FS general purpose segment to 0
+mov   gs, ax                       ; Sets the GS general purpose segment to 0
 
 ; Sets up the stack safely away from the code at the address 0x9000 (the stack grows from higher address downwards to lower addresses, therefore a
 ; stack overflow would result in the code of the boot sector to be overwritten, which will result in strange behavior)
+mov   ss, ax                       ; Sets the stack segment to 0
 mov   bp, 0x9000                   ; Sets the bottom of the stack
 mov   sp, bp                       ; Sets the top of the stack (since the stack is empty at the beginning, this is the same as the stack's bottom)
+
+; Enables all interrupts again after the segments and the stack have been set up
+sti
 
 ; Resets the screen to the standard video mode and clears it
 call ResetScreen
