@@ -23,6 +23,15 @@ I am more or less actively developing this project in my spare time. This potent
 and will not be able to work on the project. Currently the project is &ndash; *I can not stress this enough* &ndash; in a **very early** stage. I am
 still working on a very simple boot loader and haven't even started writing a simple kernel.
 
+## Acknowledgements
+
+As I stated above, this is a personal project, because I am interested in the subject. As I am writing the code for this operating system I am also
+going through a learning process. This would not be possible without the great work of others, that I do not want to let go unmentioned.
+
+The boot sector and the boot loader code are based on the great work of Mike from [BrokenThorn Entertainment](http://www.brokenthorn.com/) who has
+written a lot of great articles on [operating system development](http://www.brokenthorn.com/Resources/OSDevIndex.html). Most of the boot sector
+and boot loader code was originally written by him and I greatly appreciate, that he has so kindly shared his knowledge with the world.
+
 ## Setup
 
 If you want to try this project out, even though it momentarily does nothing more than render a success message after booting, then feel free to do so.
