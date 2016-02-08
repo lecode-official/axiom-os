@@ -1,5 +1,7 @@
 # Axiom
 
+![Axiom OS Logo](https://github.com/lecode-official/axiom-os/blob/master/Documentation/Images/Banner.png "Axiom OS Logo")
+
 ## Introduction
 
 Axiom is a personal experimental project, which explores the inner workings of operating systems as well as the intricacies of the IA-32 architecture
