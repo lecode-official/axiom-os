@@ -1,4 +1,4 @@
-# Axiom
+# Axiom OS
 
 ![Axiom OS Logo](https://github.com/lecode-official/axiom-os/blob/master/Documentation/Images/Banner.png "Axiom OS Logo")
 
