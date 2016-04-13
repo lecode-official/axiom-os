@@ -28,7 +28,7 @@ still working on a very simple boot loader and haven't even started writing a si
 ## Acknowledgements
 
 As I stated above, this is a personal project, because I am interested in the subject. As I am writing the code for this operating system I am also
-going through a learning process. This would not be possible without the great work of others, that I do not want to let go unmentioned.
+going through a learning process. This would not be possible without the great work of others, and I do not want to let them go unmentioned.
 
 The boot sector and the boot loader code are based on the great work of Mike from [BrokenThorn Entertainment](http://www.brokenthorn.com/) who has
 written a lot of great articles on [operating system development](http://www.brokenthorn.com/Resources/OSDevIndex.html). Most of the boot sector
