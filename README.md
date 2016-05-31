@@ -64,4 +64,4 @@ qemu-system-x86_64 Build/Axiom-0.0.1-Pre-Alpha-1.img
 ## Contributions
 
 Currently I am not accepting any contributors, but if you want to help, I would greatly appreciate feedback and bug reports. To file a bug, please use GitHub's
-issue system. Alternatively, you can clone the repository and send us a pull request.
+issue system. Alternatively, you can clone the repository and send me a pull request.
